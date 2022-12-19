@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestoSpotAPI.Data;
 using RestoSpotAPI.Models;
@@ -16,6 +17,7 @@ namespace RestoSpotAPI.Controllers
             _restoSpotDbContext = restoSpotDbContext;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GettAllRestaurants()
         {
@@ -38,7 +40,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(restaurants);
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddRestaurant([FromBody] restaurants restaurantsRequest)
         {
@@ -49,6 +51,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(restaurantsRequest);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetRestaurant([FromRoute] Guid id)
@@ -77,6 +80,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(restaurant);
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateRestaurant([FromRoute] Guid id, restaurants updateRestaurantRequest)
@@ -99,7 +103,8 @@ namespace RestoSpotAPI.Controllers
 
             return Ok(restaurant);
         }
-        
+
+        [Authorize]
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteRestaurant([FromRoute] Guid id)

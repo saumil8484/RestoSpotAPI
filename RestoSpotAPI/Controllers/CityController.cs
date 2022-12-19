@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestoSpotAPI.Data;
 using RestoSpotAPI.Models;
@@ -15,7 +16,8 @@ namespace RestoSpotAPI.Controllers
         {
             _restoSpotDbContext = restoSpotDbContext;
         }
-        
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllCities()
         {
@@ -24,6 +26,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(cities);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddCity([FromBody] city cityRequest)
         {
@@ -34,6 +37,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(cityRequest);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetCity([FromRoute] Guid id)
@@ -48,6 +52,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(city);
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateCity([FromRoute] Guid id, city updateCityRequest)
@@ -67,6 +72,7 @@ namespace RestoSpotAPI.Controllers
             return Ok(city);
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteCity([FromRoute] Guid id)
