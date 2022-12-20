@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestoSpotAPI.Data;
 using RestoSpotAPI.Models;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace RestoSpotAPI.Controllers
 {
@@ -44,6 +46,11 @@ namespace RestoSpotAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRestaurant([FromBody] restaurants restaurantsRequest)
         {
+
+            var rating = CheckRating(restaurantsRequest.Rating);
+            if (!string.IsNullOrEmpty(rating))
+                return BadRequest(new { Message = rating.ToString() });
+
             restaurantsRequest.RestaurantId = Guid.NewGuid();
             await _restoSpotDbContext.restaurants.AddAsync(restaurantsRequest);
             await _restoSpotDbContext.SaveChangesAsync();
@@ -86,8 +93,11 @@ namespace RestoSpotAPI.Controllers
         public async Task<IActionResult> UpdateRestaurant([FromRoute] Guid id, restaurants updateRestaurantRequest)
         {
             var restaurant = await _restoSpotDbContext.restaurants.FindAsync(id);
+            var rating = CheckRating(updateRestaurantRequest.Rating);
+            if (!string.IsNullOrEmpty(rating))
+                return BadRequest(new { Message = rating.ToString() });
 
-            if(restaurant == null)
+            if (restaurant == null)
             {
                 return NotFound();
             }
@@ -121,6 +131,15 @@ namespace RestoSpotAPI.Controllers
             await _restoSpotDbContext.SaveChangesAsync();
 
             return Ok(restaurant);
+        }
+
+        private string CheckRating(decimal rating)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (rating > 5)
+                sb.Append("Rating must be out of 5 !" + Environment.NewLine);
+
+            return sb.ToString();
         }
     }
 }
